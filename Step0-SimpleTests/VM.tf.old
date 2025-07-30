@@ -1,14 +1,14 @@
 # This code is compatible with Terraform 4.25.0 and versions that are backwards compatible to 4.25.0.
 # For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
 
-resource "google_compute_instance" "TF_instance-jumbox" {
+resource "google_compute_instance" "instance-20250730-133018" {
   boot_disk {
     auto_delete = true
-    device_name = "instance-jumbox"
+    device_name = "instance-20250730-133018"
 
     initialize_params {
-      image = "projects/windows-cloud/global/images/windows-server-2025-dc-v20250612"
-      size  = 50
+      image = "projects/debian-cloud/global/images/debian-12-bookworm-v20250709"
+      size  = 10
       type  = "pd-balanced"
     }
 
@@ -20,17 +20,17 @@ resource "google_compute_instance" "TF_instance-jumbox" {
   enable_display      = false
 
   labels = {
-    goog-ec-src           = "Jumbox"
+    goog-ec-src           = "vm_add-tf"
     goog-ops-agent-policy = "v2-x86-template-1-4-0"
   }
 
-  machine_type = "e2-medium"
+  machine_type = "e2-micro"
 
   metadata = {
     enable-osconfig = "TRUE"
   }
 
-  name = "instance-jumbox"
+  name = "instance-20250730-133018"
 
   network_interface {
     access_config {
@@ -39,7 +39,7 @@ resource "google_compute_instance" "TF_instance-jumbox" {
 
     queue_count = 0
     stack_type  = "IPV4_ONLY"
-    subnetwork  = "projects/emea-portfolio-nc2/regions/us-central1/subnetworks/bngcpvpc-subnet01"
+    subnetwork  = "projects/emea-portfolio-nc2/regions/europe-west4/subnetworks/custom-vpc-subnet"
   }
 
   scheduling {
@@ -60,14 +60,14 @@ resource "google_compute_instance" "TF_instance-jumbox" {
     enable_vtpm                 = true
   }
 
-  zone = "us-central1-a"
+  zone = "europe-west4-b"
 }
 
 module "ops_agent_policy" {
   source          = "github.com/terraform-google-modules/terraform-google-cloud-operations/modules/ops-agent-policy"
   project         = "emea-portfolio-nc2"
-  zone            = "us-central1-a"
-  assignment_id   = "goog-ops-agent-v2-x86-template-1-4-0-us-central1-a"
+  zone            = "europe-west4-b"
+  assignment_id   = "goog-ops-agent-v2-x86-template-1-4-0-europe-west4-b"
   agents_rule = {
     package_state = "installed"
     version = "latest"
