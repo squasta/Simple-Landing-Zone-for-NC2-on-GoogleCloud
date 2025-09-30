@@ -23,8 +23,24 @@ You can also clone this repo in your [Google Cloud Shell](https://cloud.google.c
 For additional information about creating manually your ressources on Google Cloud for Nutanix Cloud Cluster : URL-TBD
 
 
-
 # Step 1 - Service accounts and custom roles
 
+NC2 on Google Cloud requires 2 Services Accounts with specifics permissions :
+- one to be used by NC2 Portal (aka MCM)
+    - More informations about permissions : UBD-URL
+- one to used by GCE Metal instances of the cluster
+    - More informations about permissions : UBD-URL
 
-# Step 2 - Networking (will include CLoud VPN deployment)
+
+
+# Step 2 - Networking (will include Cloud VPN deployment)
+
+## Landing Zone architecture(s)
+
+This landing zone is designed for an NC2 on Google Cloud with **Nutanix Flow Networking** and a VPN Site to Site connexion with on premises (or other cloud) network.
+
+<img width='800' src='./images/NC2-AWS-S2S-TGW.png'/>  
+
+IP ranges and **all variables** can be defined/customized by editing [example-configuration.tfvars](example-configuration.tfvars). Then rename example-configuration.tfvars to configuration.tfvars
+
+This landing zone also include the option to have a dedicated private subnet and a virtual machine to use as a jumbox. All Google Cloud resources related to Jumbox are in [jumbox.tf](jumbox.tf) file.
