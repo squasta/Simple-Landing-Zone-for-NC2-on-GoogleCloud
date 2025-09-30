@@ -1,4 +1,3 @@
-
 #  __      __        _       _     _           
 #  \ \    / /       (_)     | |   | |          
 #   \ \  / /_ _ _ __ _  __ _| |__ | | ___  ___ 
@@ -9,64 +8,115 @@
 #### VARIABLES DEFINITION with default values
 #### please enter or check your values in configuration.tfvars  
 
-
-# variale Jumbox Virtual Machine Name
-variable "jumbox_vm_name" {
-  description = "Name of the Jumbox Virtual Machine"
-  type        = string
-  default     = "jumbox-vm"
-}
-
-# Google Project ID
-variable "project_id" {
-  description = "Google Cloud Project ID"
-  type        = string
-  default     = "emea-portfolio-nc2"
+# Google ProjectID 
+variable "ProjectID" {
+  type = string
+  description = "Google Cloud Project ID" 
+  default = "your-project-id"
 }
 
 # Google Cloud Region
-variable "region" {
+variable "Region" {
+  type = string
   description = "Google Cloud Region"
-  type        = string
-  default     = "us-central1"
-}
-# Google Cloud Zone
-variable "zone" {
-  description = "Google Cloud Zone"
-  type        = string
-  default     = "us-central1-a"
+  default = "europe-west4"
 }
 
-# Google Cloud Network VPC name
-variable "network_name" {
-  description = "Google Cloud Network VPC name"
+variable "CustomVpcSubnetCidr" {
+  description = "CIDR range for the custom VPC subnet"
   type        = string
-  default     = "bngcpvpc"
+  default     = "172.16.0.0/16"
 }
 
-# Google Cloud Subnetwork name
-variable "subnetwork_name" {
-  description = "Google Cloud Subnetwork name"
-  type        = string
-  default     = "bngcpvpc-subnet01"
-}
-# Google Cloud Subnetwork IP CIDR
-variable "subnetwork_ip_cidr" {
-  description = "Google Cloud Subnetwork IP CIDR"
-  type        = string
-  default     = ""
+##### FOR VPN GATEWAY AND TUNNEL
+
+variable "VpnGatewayName" {
+    description = "Name of the VPN gateway"
+    type        = string
 }
 
-# Google Cloud Subnetwork IP CIDR
-  variable "subnetwork_ip_cidr" {
-  description = "Google Cloud Subnetwork IP CIDR"
-  type        = string
-  default     = ""
-  }
 
- # Use a spot (preemptible) instance for jumbox VM
-  variable "enable_spot_instance" {
-  description = "Enable Spot Instance"
-  type        = number
-  default     = 0      # (=false)
+variable "VpnTunnelName" {
+    description = "Name of the VPN tunnel"
+    type        = string
+}
+
+variable "PeerIp" {
+    description = "The peer gateway public IP address"
+    type        = string
+}
+
+variable "SharedSecret" {
+    description = "Shared secret for the VPN tunnel"
+    type        = string
+    sensitive   = true
+}
+
+# a comma-delimited list of the Google Cloud IP ranges.
+# For example, you can supply the CIDR block for each subnet in a VPC network.
+# This is the left side from the perspective of Cloud VPN.
+variable "LocalTrafficSelector" {
+    description = "CIDR blocks for local traffic selector"
+    type        = list(string)
+    default     = ["172.16.0.0/16"]
+}
+
+# a comma-delimited list of the peer network IP ranges. 
+# This is the right side from the perspective of Cloud VPN.
+variable "RemoteTrafficSelector" {
+    description = "CIDR blocks for remote traffic selector"
+    type        = list(string)
+    default     = ["10.0.0.0/8"]
+}
+
+variable "IkeVersion" {
+    description = "IKE protocol version"
+    type        = number
+    default     = 2
+}
+
+variable "IkeEncryptionAlgorithm" {
+    description = "IKE encryption algorithm"
+    type        = string
+    default     = "AES_256"
+}
+
+variable "IkeIntegrityAlgorithm" {
+    description = "IKE integrity algorithm"
+    type        = string
+    default     = "SHA256"
+}
+
+variable "IkeDhGroupNumber" {
+    description = "IKE DH group number"
+    type        = number
+    default     = 14
+}
+
+variable "IpsecEncryptionAlgorithm" {
+    description = "IPsec encryption algorithm"
+    type        = string
+    default     = "AES_256"
+}
+
+variable "IpsecIntegrityAlgorithm" {
+    description = "IPsec integrity algorithm"
+    type        = string
+    default     = "SHA256"
+}
+
+variable "IpsecPfsDhGroupNumber" {
+    description = "IPsec PFS DH group number"
+    type        = number
+    default     = 14
+}
+
+# Zone for the VM instance
+# gcloud compute zones list
+# gcloud compute zones list --filter="region:(europe-west4)"
+# https://cloud.google.com/compute/docs/regions-zones
+variable "VmZone" {
+  description = "Zone for the VM instance"
+  type        = string
+  default     = "europe-west4-b"
 }

@@ -40,6 +40,7 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Nodes" {
         "compute.instances.get",
         "compute.instances.updateNetworkInterface",
         "compute.regionBackendServices.get",
+        "compute.regionBackendServices.create",
         "compute.instances.use",
         "compute.networkEndpointGroups.use",
         "compute.regionBackendServices.update",
@@ -51,7 +52,14 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Nodes" {
         "compute.routes.list",
         "compute.routes.create",
         "compute.networks.updatePolicy",
-        "compute.routes.delete"
+        "compute.routes.delete",
+        "compute.subnetworks.use",
+        "compute.regionBackendServices.use",
+        "compute.forwardingRules.create",
+        "compute.forwardingRules.use",
+        "compute.regionBackendServices.delete",
+        "compute.forwardingRules.delete",
+        "compute.forwardingRules.setLabels"
         # Add any additional permissions required for NC2 nodes
     ]
 }
@@ -144,6 +152,7 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "compute.networks.create",
         "compute.networks.delete",
         "compute.networks.get",
+        "compute.networks.getEffectiveFirewalls",
         "compute.networks.list",
         "compute.networks.updatePolicy",
         "compute.networks.use",
@@ -167,10 +176,12 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "compute.zoneOperations.get",
         "compute.zones.get",
         "compute.zones.list",
+        "iam.roles.get",
         "iam.serviceAccounts.actAs",
         "iam.serviceAccounts.get",
         "iam.serviceAccounts.list",
-        "resourcemanager.projects.get"
+        "resourcemanager.projects.get",
+        "resourcemanager.projects.getIamPolicy"
          # Add any additional permissions required for NC2 portal
     ]
 }

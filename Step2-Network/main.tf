@@ -1,8 +1,9 @@
-# This resource creates a custom VPC network without auto-created subnetworks.
+# This resource creates a custom VPC network WITHOUT auto-created subnetworks.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network
 resource "google_compute_network" "custom_vpc" {
   name                    = "custom-vpc"
   auto_create_subnetworks = false
+  mtu                     = 8896 # must be >= 2000 for NC2 on GCP
 }
 
 
@@ -16,7 +17,7 @@ resource "google_compute_subnetwork" "custom_vpc_subnet" {
 }
 
 
-## VPN Gateway and its associated resources
+## VPN Gateway (Classic VPN) and its associated resources
 ## cf. https://cloud.google.com/network-connectivity/docs/vpn/how-to/creating-static-vpns#gcloud
 
 resource "google_compute_address" "TF_VpnGatewayStaticIp" {
@@ -85,7 +86,7 @@ resource "google_compute_vpn_tunnel" "TF_VPN_Tunnel" {
     # If you need to specify a local traffic selector, create a Cloud VPN tunnel that uses policy-based routing instead.
     # The local_traffic_selector field cannot be empty for network in custom subnet mode
     local_traffic_selector  = var.LocalTrafficSelector
-    remote_traffic_selector = var.RemoteTrafficSelector
+    # remote_traffic_selector = var.RemoteTrafficSelector
 
     # cipher_suite {
     #     phase1 {
