@@ -181,8 +181,13 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "iam.serviceAccounts.get",
         "iam.serviceAccounts.list",
         "resourcemanager.projects.get",
-        "resourcemanager.projects.getIamPolicy"
-         # Add any additional permissions required for NC2 portal
+        "resourcemanager.projects.getIamPolicy",
+         # new permissions needeed for NC2 on GCP GA and onwards
+        "compute.networks.addPeering",
+        "compute.networks.listPeeringRoutes",
+        "compute.networks.removePeering",
+        "compute.networks.updatePeering"
+        # Add any additional permissions required for NC2 portal
     ]
 }
 

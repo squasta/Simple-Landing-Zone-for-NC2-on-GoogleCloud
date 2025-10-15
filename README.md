@@ -105,7 +105,7 @@ terraform apply --var-file=configuration.tfvars
 
 <img width='800' src='./images/Terraformdeploy2.png'/>
 
-4. Wait until the end of deployment (It should take around 18 minutes)
+4. Wait until the end of deployment (It should take around xx minutes)
 
 <img width='800' src='./images/Terraformdeploy1.png'/>
 
@@ -159,7 +159,7 @@ In Step 6 (**Prism Central**) choose the PC Subnet and FVN (Flow Virtual Network
 
 <img width='800' src='./images/NC2WizStep6.png'/> 
 
-8. After the deployment of the cluster is successfull, you can add connectivity with on-premises or other Google Cloud VPC or services by peering [a SharedVPC](https://cloud.google.com/vpc/docs/shared-vpc) or [a Hub] (https://cloud.google.com/network-connectivity/docs/network-connectivity-center/how-to/vpc-configure-hub). If you enabled a bastion and a Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
+8. After the deployment of the cluster is successfull, you can add connectivity with on-premises or other Google Cloud VPC or services by peering [a SharedVPC](https://cloud.google.com/vpc/docs/shared-vpc) or [a Hub](https://cloud.google.com/network-connectivity/docs/network-connectivity-center/how-to/vpc-configure-hub). If you enabled a bastion and a Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
 
 9. Use the solution and configure Nutanix features like categories, VM, replication...
 
