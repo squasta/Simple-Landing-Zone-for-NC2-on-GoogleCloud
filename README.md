@@ -9,8 +9,8 @@ This repo contains terraform code to deploy a **simple network landing zone for 
 ## Prerequisites
 
 - Of course a VPN Gateway running on premises (or on a public cloud platform)
-- All prerequisites for NC2 : URL-TBD
-- More information about NC2 on GCP : URL-TBD
+- [All prerequisites for NC2 on Google](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-prerequisites-c.html)
+- More information about NC2 on GCP : [NC2 on Google Cloud Overview] (https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-overview-c.html)
 
 - An Google Project with enough privileges (create Role, ...)
 - Google Cloud CLI x.x. or > : https://cloud.google.com/sdk/docs/install-sdk 
@@ -27,9 +27,10 @@ For additional information about creating manually your ressources on Google Clo
 
 NC2 on Google Cloud requires 2 Services Accounts with specifics permissions :
 - one to be used by NC2 Portal (aka MCM)
-    - More informations about permissions : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-config-service-account-nc2-t.html
+    - [More informations about permission on Nutanix official documentation](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-config-service-account-nc2-t.html)
+
 - one to used by GCE Metal instances of the cluster
-    - More informations about permissions : [UBD-URL](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-enable-compute-engine-api-t.html)
+    - [More informations about permission on Nutanix official documentation](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-enable-compute-engine-api-t.html)
 
 
 
@@ -63,12 +64,12 @@ To get these information, you can use the [Google CLI](https://cloud.google.com/
 gcloud auth application-default login
 ```
 
-You can list your Google regions available using the following command :
+You can list your Google regions available with quotas using the following command :
 
 ```bash
-aws ec2 describe-regions --output table
+gcloud compute regions list
 ```
-<img width='800' src='./images/GetAvailableRegions.png'/> 
+<img width='800' src='./images/GCP-region-gcloud.png'/> 
 
 The following command gives the region actually used by the CLI regardless of whether environment variables are or are not set:
 https://cloud.google.com/sdk/gcloud/reference/config/set
