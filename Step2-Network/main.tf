@@ -1,20 +1,39 @@
 # This resource creates a custom VPC network WITHOUT auto-created subnetworks.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network
-resource "google_compute_network" "custom_vpc" {
+resource "google_compute_network" "terra_custom_vpc" {
   name                    = "custom-vpc"
   auto_create_subnetworks = false
   mtu                     = 8896 # must be >= 2000 for NC2 on GCP
 }
 
+# Peering with other Google VPCs can be added here if needed
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network_peering
+# IMPORTANT : Ensure that you enable export_custom_routes (created for NoNAT ERP)
+# export_custom_routes = true
+
 
 # This resource creates a subnetwork within the custom VPC using the specified CIDR range and region.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork
-resource "google_compute_subnetwork" "custom_vpc_subnet" {
-  name          = "custom-vpc-subnet"
-  ip_cidr_range = var.CustomVpcSubnetCidr
+resource "google_compute_subnetwork" "terra_cluster_management_subnet" {
+  name          = var.VPCName
+  ip_cidr_range = var.ClusterManagementSubnetCidr
   region        = var.Region
-  network       = google_compute_network.custom_vpc.id
+  network       = google_compute_network.terra_custom_vpc.id
+  secondary_ip_range {
+    range_name    = "secondary-range-for-nat"
+    ip_cidr_range = var.NATSubnetCidr
+  }
 }
+
+# This resource creates a subnetwork within the custom VPC using the specified CIDR range and region.
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork
+resource "google_compute_subnetwork" "terra_NoNAT_subnet" {
+  name          = "nonat-subnet"
+  ip_cidr_range = var.NoNATSubnetCidr
+  region        = var.Region
+  network       = google_compute_network.terra_custom_vpc.id
+}
+
 
 
 ## VPN Gateway (Classic VPN) and its associated resources
@@ -27,7 +46,7 @@ resource "google_compute_address" "TF_VpnGatewayStaticIp" {
 
 resource "google_compute_vpn_gateway" "TF_VPNGateway" {
     name    = var.VpnGatewayName
-    network = google_compute_network.custom_vpc.id
+    network = google_compute_network.terra_custom_vpc.id
     region  = var.Region
 
     depends_on = [google_compute_address.TF_VpnGatewayStaticIp]
@@ -139,7 +158,7 @@ resource "google_compute_vpn_tunnel" "TF_VPN_Tunnel" {
 
 resource "google_compute_route" "TF_Route_to_on_premises" {
   name       = "route-to-on-premises"
-  network    = google_compute_network.custom_vpc.id
+  network    = google_compute_network.terra_custom_vpc.id
   dest_range = "10.0.0.0/8"  # Replace with your on-premises network CIDR
   priority   = 1000
 
@@ -147,14 +166,12 @@ resource "google_compute_route" "TF_Route_to_on_premises" {
 }
 
 
-
-
 # ## A firewall rule to allow traffic from the VPN tunnel to the custom VPC network.
 ## cf. https://cloud.google.com/vpc/docs/firewalls
 ## cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall
 resource "google_compute_firewall" "TF_allow_vpn_traffic" {
   name    = "allow-vpn-traffic"
-  network = google_compute_network.custom_vpc.id        
+  network = google_compute_network.terra_custom_vpc.id        
     allow {
         protocol = "tcp"
         ports    = ["22", "80", "443"]  # Adjust ports as needed

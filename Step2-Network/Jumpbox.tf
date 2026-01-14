@@ -1,9 +1,15 @@
 # This code is compatible with Terraform 4.25.0 and versions that are backwards compatible to 4.25.0.
 # For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
 
+# Fetch the latest Windows Server 2025 (Desktop Experience) image from the "windows-cloud" project
+data "google_compute_image" "terra_jumbox_image" {
+  family  = "windows-2025"
+  project = "windows-cloud"
+}
 
 
-resource "google_compute_instance" "instance-20250730-133018" {
+resource "google_compute_instance" "terra_jumbox_vm" {
+  count = var.EnableJumbox
   boot_disk {
     auto_delete = true
     device_name = "windows-jumbox-nc2"
@@ -11,9 +17,11 @@ resource "google_compute_instance" "instance-20250730-133018" {
     initialize_params {
       # To get Windows Server 2025 images : gcloud compute images list --project=windows-cloud --filter="name:windows-server-2025"
       # windows-server-2025-dc-v20250813
-      image = "projects/windows-cloud/global/images/windows-server-2025-dc-v20250813"
+      # image = "projects/windows-cloud/global/images/windows-server-2025-dc-v20251209"
 
-      # image = "projects/debian-cloud/global/images/debian-12-bookworm-v20250709"
+      # image = data.google_compute_image.terra_jumbox_image.image_id  
+      image = data.google_compute_image.terra_jumbox_image.id
+
       size  = 50
       type  = "pd-balanced"
     }
@@ -51,8 +59,7 @@ resource "google_compute_instance" "instance-20250730-133018" {
 
     queue_count = 0
     stack_type  = "IPV4_ONLY"
-    subnetwork = google_compute_subnetwork.custom_vpc_subnet.id
-    # subnetwork  = "projects/emea-portfolio-nc2/regions/europe-west4/subnetworks/custom-vpc-subnet"
+    subnetwork = google_compute_subnetwork.terra_cluster_management_subnet.id
   }
 
   scheduling {
@@ -63,7 +70,7 @@ resource "google_compute_instance" "instance-20250730-133018" {
   }
 
   service_account {
-    email  = "619232281134-compute@developer.gserviceaccount.com"
+    email  = var.VmServiceAccountEmail
     scopes = ["https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
 
@@ -81,8 +88,9 @@ resource "google_compute_instance" "instance-20250730-133018" {
 # cf. https://cloud.google.com/vpc/docs/firewalls#creating_firewall_rules
 # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall
 resource "google_compute_firewall" "TF_Allow_RDP" {
+  count = var.EnableJumbox
   name    = "allow-rdp"
-  network = google_compute_network.custom_vpc.id
+  network = google_compute_network.terra_custom_vpc.id
 
   allow {
     protocol = "tcp"

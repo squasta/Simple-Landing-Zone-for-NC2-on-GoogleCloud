@@ -39,7 +39,7 @@ NC2 on Google Cloud requires 2 Services Accounts with specifics permissions :
 
 This landing zone is designed for an NC2 on Google Cloud with **Nutanix Flow Networking** and a VPN Site to Site connexion with on premises (or other cloud) network.
 
-<img width='800' src='./images/NC2-AWS-S2S-TGW.png'/>  
+<img width='800' src='./images/LandingZoneNC2onGoogleCloud.png'/>  
 
 IP ranges and **all variables** can be defined/customized by editing [example-configuration.tfvars](example-configuration.tfvars). Then rename example-configuration.tfvars to configuration.tfvars
 
@@ -50,7 +50,7 @@ This landing zone also include the option to have a dedicated private subnet and
 
 Clone this repo.
 
-Edit [example-configuration.tfvars](example-configuration.tfvars) to define your AWS resources names or tags, your AWS region, AMI for Jumpbox Virtual Machine... Then rename example-configuration.tfvars to configuration.tfvars
+Edit [example-configuration.tfvars](example-configuration.tfvars) to define your Google Cloud resources names or tags, your Google region... Then rename example-configuration.tfvars to configuration.tfvars
 
 <img width='800' src='./images/configurationtfvars.png'/> 
 
@@ -58,6 +58,10 @@ Edit [example-configuration.tfvars](example-configuration.tfvars) to define your
 
 
 To get these information, you can use the [Google CLI](https://cloud.google.com/sdk/gcloud) on your workstation or in [Google Cloud Shell](https://cloud.google.com/shell/docs/launching-cloud-shell?hl=en)
+
+```bash 
+gcloud auth application-default login
+```
 
 You can list your Google regions available using the following command :
 

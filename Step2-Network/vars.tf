@@ -22,11 +22,42 @@ variable "Region" {
   default = "europe-west4"
 }
 
-variable "CustomVpcSubnetCidr" {
-  description = "CIDR range for the custom VPC subnet"
+# VPC Name
+variable "VPCName" {
+  description = "Name of the custom VPC"
+  type        = string
+  default     = "terra-custom-vpc"
+}
+
+variable "ClusterManagementSubnetCidr" {
+  description = "CIDR range for the Cluster Management VPC subnet"
   type        = string
   default     = "172.16.0.0/16"
 }
+
+variable "NATSubnetCidr" {
+  description = "CIDR range for the NoNAT VPC subnet"
+  type        = string
+  default     = "172.17.0.0/16"
+}
+
+variable "NoNATSubnetCidr" {
+  description = "CIDR range for the NoNAT VPC subnet"
+  type        = string
+  default     = "172.18.0.0/16"
+}
+
+
+#### For Jumbox VM instance
+
+# Enable VM Jumbox (0=disable, 1=enable)
+variable "EnableJumbox" {
+  description = "Enable Jumbox VM instance"
+  type        = number
+  default     = 0
+}
+
+
 
 ##### FOR VPN GATEWAY AND TUNNEL
 
@@ -111,6 +142,9 @@ variable "IpsecPfsDhGroupNumber" {
     default     = 14
 }
 
+## Jumbox VM instance 
+
+
 # Zone for the VM instance
 # gcloud compute zones list
 # gcloud compute zones list --filter="region:(europe-west4)"
@@ -119,4 +153,10 @@ variable "VmZone" {
   description = "Zone for the VM instance"
   type        = string
   default     = "europe-west4-b"
+}
+
+# Service account email for the VM instance
+variable "VmServiceAccountEmail" {
+  description = "Service account email for the VM instance"
+  type        = string
 }
