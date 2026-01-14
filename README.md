@@ -20,16 +20,16 @@ This repo contains terraform code to deploy a **simple network landing zone for 
 
 You can also clone this repo in your [Google Cloud Shell](https://cloud.google.com/shell/docs) and [use terraform in your cloud shell](https://cloud.google.com/docs/terraform/install-configure-terraform).
 
-For additional information about creating manually your ressources on Google Cloud for Nutanix Cloud Cluster : URL-TBD
+For additional information about creating manually your ressources on Google Cloud for Nutanix Cloud Cluster : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-manual-setup-gc-c.html
 
 
 # Step 1 - Service accounts and custom roles
 
 NC2 on Google Cloud requires 2 Services Accounts with specifics permissions :
 - one to be used by NC2 Portal (aka MCM)
-    - More informations about permissions : UBD-URL
+    - More informations about permissions : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-config-service-account-nc2-t.html
 - one to used by GCE Metal instances of the cluster
-    - More informations about permissions : UBD-URL
+    - More informations about permissions : [UBD-URL](https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-enable-compute-engine-api-t.html)
 
 
 
@@ -76,7 +76,7 @@ https://cloud.google.com/sdk/gcloud/reference/config/set
 ```bash
 gcloud...
 ```
-
+Supported Google Cloud regions for Nutanix Cloud Clusters on Google Cloud : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-regions-c.html
 
 If you don't need a Jumpbox VM and its associated resources, you can delete [jumbox.tf](jumbox.tf) file.
 
