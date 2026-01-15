@@ -34,7 +34,7 @@ NC2 on Google Cloud requires 2 Services Accounts with specifics permissions :
 
 
 
-# Step 2 - Networking (will include Cloud VPN deployment)
+# Step 2 - Networking (includes a Cloud VPN deployment)
 
 ## Landing Zone architecture(s)
 
