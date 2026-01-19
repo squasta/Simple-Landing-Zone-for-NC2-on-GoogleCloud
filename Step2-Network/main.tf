@@ -173,19 +173,26 @@ resource "google_compute_firewall" "TF_allow_vpn_traffic" {
   name    = "allow-vpn-traffic"
   network = google_compute_network.terra_custom_vpc.id        
     allow {
-        protocol = "tcp"
-        ports    = ["22", "80", "443"]  # Adjust ports as needed
-    }
-    allow {
         protocol = "udp"
         ports    = ["500", "4500"]  # IKE and IPsec NAT-T ports
-    }
-    allow {
-        protocol = "icmp"  # ICMP protocol
     }
     source_ranges = ["0.0.0.0/0"]  # Allow traffic from any source
 }
 
 
-
+# ## A firewall rule to allow traffic from the VPN tunnel to the custom VPC network.
+## cf. https://cloud.google.com/vpc/docs/firewalls
+## cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall
+resource "google_compute_firewall" "TF_allow_traffic_from_vpn_tunnel" {
+  name    = "allow-traffic-from-vpn-tunnel"
+  network = google_compute_network.terra_custom_vpc.id        
+    allow {
+        protocol = "tcp"
+        ports    = ["22", "3389", "80", "443"]  # Adjust ports as needed
+    }
+    allow {
+        protocol = "icmp"  # ICMP protocol
+    }
+    source_ranges = var.RemoteTrafficSelector  # Allow traffic from any source
+}
 
