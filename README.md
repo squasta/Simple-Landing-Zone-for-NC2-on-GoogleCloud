@@ -165,15 +165,15 @@ terraform destroy --var-file=configuration.tfvars
 ```
 
 
-## Check you AWS Console after deployment to see cloud resources created
+## Check you Google Console after deployment to see cloud resources created
 
 ### Network components
 
-<img width='800' src='./images/Network1.png '/> 
+<img width='800' src='./images/vpc.png '/> 
 
-<img width='800' src='./images/Network2.png '/> 
+<img width='800' src='./images/firewall.png '/> 
 
-<img width='800' src='./images/routetoonprem.png'/> 
+<img width='800' src='./images/routes.png'/> 
 
 
 ## How much does it cost to test this landing zone ?
@@ -182,7 +182,7 @@ It's cheap to test and customize this simple landing zone.
 
 You can use **infracost** (available on https://www.infracost.io/) to check the estimate price for 1 month. Here is an example for Netherland (eu-west-4) Google Region without enabling a GCE Jumbox.
 
-<img width='800' src='./images/InfracostNC2LDZAWS.png'/> 
+<img width='800' src='./images/infracost.png'/> 
 
  :exclamation: Important : this landing zone cost estimation does not include the cost of Google GCE Metal instance(s) used as node(s) in the Nutanix Cluster and network traffic. 
  Please have a look of metal instances prices here : https://cloud.google.com/products/calculator?hl=en&dl=CjhDaVF3Tmprek1qVmpNUzAzWlRGaExUUXdZVGN0T0RrNE55MDVZVFZrTkRaaE56YzVPREVRQVE9PRAIGiREMUQ5QTgzOC00RjY1LTRGMkEtOEY5Qi1DMDlCQkUyRkI5Mzk . Pricing is per instance-hour consumed for each instance, from the time an instance is launched until it is terminated or stopped.
@@ -192,6 +192,7 @@ You can use **infracost** (available on https://www.infracost.io/) to check the 
 ## Future improvements on my roadmap
 
 - Add additional labels to every GCP resources 
+- Add Cloud NAT and Cloud Router
 
 
 
