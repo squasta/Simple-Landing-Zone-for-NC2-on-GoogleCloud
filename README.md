@@ -79,7 +79,7 @@ gcloud...
 ```
 Supported Google Cloud regions for Nutanix Cloud Clusters on Google Cloud : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-regions-c.html
 
-If you don't need a Jumpbox VM (that use the latest Windows Server 2025 image) and its associated resources, you can define EnableJumbox=0 in tfvars file or delete [jumbox.tf](./Step2-Network/jumbox.tf) file
+If you don't need a Jumpbox VM (that uses the latest Windows Server 2025 image) and its associated resources, you can define EnableJumbox=0 in tfvars file or delete [jumbox.tf](./Step2-Network/jumbox.tf) file
 
 
 1. Terraform Init phase  
@@ -102,7 +102,7 @@ terraform apply --var-file=configuration.tfvars
 
 <img width='800' src='./images/Terraformdeploy2.png'/>
 
-4. Wait until the end of deployment (It should take around xx minutes)
+4. Wait until the end of deployment (It should take around 3-4 minutes)
 
 <img width='800' src='./images/Terraformdeploy1.png'/>
 
@@ -129,7 +129,7 @@ On your on premises VPN Gateway management UI, check VPN Tunnel Status :
 
 6. Deploy an GCE instance in the NC2 VPC (for example in the management subnet) to perform a connectivity test between Google network and on-premises network
 
-<img width='800' src='./images/CheckIPofEC2instances.png'/>
+<img width='800' src='./images/GCEinstances.png'/>
 
 
 Ping the GCE instance from an on premises device and validate that VPN Site to site is up and running
