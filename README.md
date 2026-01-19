@@ -51,7 +51,7 @@ This landing zone also include the option to have a dedicated private subnet and
 
 Clone this repo.
 
-Edit [example-configuration.tfvars](example-configuration.tfvars) to define your Google Cloud resources names or tags, your Google region... Then rename example-configuration.tfvars to configuration.tfvars
+Edit [example-configuration.tfvars](./Step2-Network/example-configuration.tfvars) to define your Google Cloud resources names or tags, your Google region... Then rename example-configuration.tfvars to configuration.tfvars
 
 <img width='800' src='./images/configurationtfvars.png'/> 
 
@@ -79,15 +79,7 @@ gcloud...
 ```
 Supported Google Cloud regions for Nutanix Cloud Clusters on Google Cloud : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-regions-c.html
 
-If you don't need a Jumpbox VM and its associated resources, you can delete [jumbox.tf](jumbox.tf) file.
-
-To get AMI ID  for the Windows Server Jumbox in the choosen region :
-
-```bash
-gcloud compute images list --project=windows-cloud --filter="name:windows-server-2025"
-```
-
-<img width='800' src='./images/AWSCLI-GetAMIID.png'/>  
+If you don't need a Jumpbox VM (that use the latest Windows Server 2025 image) and its associated resources, you can define EnableJumbox=0 in tfvars file or delete [jumbox.tf](./Step2-Network/jumbox.tf) file
 
 
 1. Terraform Init phase  
@@ -114,19 +106,19 @@ terraform apply --var-file=configuration.tfvars
 
 <img width='800' src='./images/Terraformdeploy1.png'/>
 
-5. Get the Public IP used for VPN Tunnels on the Google VPN Gateway
+5. Get the Public IP used for VPN Tunnels on the Google VPN Gateway that is provided as an output or 
 
 On the Google Console : 
 
-<img width='800' src='./images/checkpublicipvpntunnelaws.png'/>
+<img width='800' src='./images/googlevpn-1.png'/>
 
 Then use this public IP in the on-premises VPN Gateway tunnel configuration.
 
 Example using a Unifi Gateway : 
 
-<img width='800' src='./images/AWSPublicIP-onpremVPNconfig.png'/>
+<img width='800' src='./images/GooglePublicIP-onpremVPNconfig.png'/>
 
-On AWS Console, check that the VPN Tunnel is up
+On Google Console, check that the VPN Tunnel is up
 
 <img width='800' src='./images/CheckVPNtunnelOK.png'/>
 
@@ -139,9 +131,6 @@ On your on premises VPN Gateway management UI, check VPN Tunnel Status :
 
 <img width='800' src='./images/CheckIPofEC2instances.png'/>
 
-Check the Security Group defined to open network communications from on premises
-
-<img width='800' src='./images/SGforonpremises.png'/>
 
 Ping the GCE instance from an on premises device and validate that VPN Site to site is up and running
 
