@@ -106,9 +106,7 @@ terraform apply --var-file=configuration.tfvars
 
 <img width='800' src='./images/Terraformdeploy1.png'/>
 
-5. Get the Public IP used for VPN Tunnels on the Google VPN Gateway that is provided as an output or 
-
-On the Google Console : 
+5. Get the Public IP used for VPN Tunnels on the Google VPN Gateway that is provided as an terraform output or on the Google Console : 
 
 <img width='800' src='./images/googlevpn-1.png'/>
 
@@ -143,11 +141,11 @@ In Step 1 (**General**) choose the same Google region and Availability Zone that
 
 <img width='800' src='./images/nc2-wizard-step1.png'/> 
 
-In Step 4 (**Network**) choose the VPC and Management Subnets created with terraform
+In Step 4 (**Network**) choose the cluster VPC and cluster Subnet created with terraform
 
 <img width='800' src='./images/nc2-wizard-step4.png'/>
 
-In Step 6 (**Flow Networking**) choose the PC Subnet and FVN (Flow Virtual Networking) subnet created with terraform
+In Step 6 (**Flow Networking**) choose the FVN (Flow Virtual Networking) NAT range subnet and FVN No-NAT subnet range created with terraform
 
 <img width='800' src='./images/nc2-wizard-step6.png'/> 
 
