@@ -35,6 +35,33 @@ resource "google_compute_subnetwork" "terra_NoNAT_subnet" {
 }
 
 
+### Cloud NAT for the VPC
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router
+resource "google_compute_router" "terra_router" {
+  name    = "my-router"
+  region  = google_compute_subnetwork.terra_cluster_management_subnet.region
+  network = google_compute_network.terra_custom_vpc.id
+
+  bgp {
+    asn = 64514
+  }
+}
+
+resource "google_compute_router_nat" "terra_nat" {
+  name                               = "my-router-nat"
+  router                             = google_compute_router.terra_router.name
+  region                             = google_compute_router.terra_router.region
+  nat_ip_allocate_option             = "AUTO_ONLY"
+  source_subnetwork_ip_ranges_to_nat = "ALL_SUBNETWORKS_ALL_IP_RANGES"
+
+  log_config {
+    enable = true
+    filter = "ERRORS_ONLY"
+  }
+}
+
+#### End of Cloud NAT configuration
+
 
 ## VPN Gateway (Classic VPN) and its associated resources
 ## cf. https://cloud.google.com/network-connectivity/docs/vpn/how-to/creating-static-vpns#gcloud
