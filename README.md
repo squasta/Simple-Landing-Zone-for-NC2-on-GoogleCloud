@@ -141,17 +141,15 @@ Ping the GCE instance from an on premises device and validate that VPN Site to s
 
 In Step 1 (**General**) choose the same Google region and Availability Zone that you used in your terraform deployment
 
-<img width='800' src='./images/NC2WizStep1.png'/> 
+<img width='800' src='./images/nc2-wizard-step1.png'/> 
 
 In Step 4 (**Network**) choose the VPC and Management Subnets created with terraform
 
-<img width='800' src='./images/NC2WizStep4-1.png'/>
+<img width='800' src='./images/nc2-wizard-step4.png'/>
 
-<img width='800' src='./images/NC2WizStep4-2.png'/>
+In Step 6 (**Flow Networking**) choose the PC Subnet and FVN (Flow Virtual Networking) subnet created with terraform
 
-In Step 6 (**Prism Central**) choose the PC Subnet and FVN (Flow Virtual Networking) subnet created with terraform
-
-<img width='800' src='./images/NC2WizStep6.png'/> 
+<img width='800' src='./images/nc2-wizard-step6.png'/> 
 
 8. After the deployment of the cluster is successfull, you can add connectivity with on-premises or other Google Cloud VPC or services by peering [a SharedVPC](https://cloud.google.com/vpc/docs/shared-vpc) or [a Hub](https://cloud.google.com/network-connectivity/docs/network-connectivity-center/how-to/vpc-configure-hub). If you enabled a bastion and a Jumpbox VM, you can login to the Jumbox VM and connect Prism Element or Prism Central through a web browser.
 
@@ -192,7 +190,6 @@ You can use **infracost** (available on https://www.infracost.io/) to check the 
 ## Future improvements on my roadmap
 
 - Add additional labels to every GCP resources 
-- Add Cloud NAT and Cloud Router
 
 
 
