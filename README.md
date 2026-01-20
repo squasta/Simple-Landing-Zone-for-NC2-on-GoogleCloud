@@ -55,7 +55,7 @@ Edit [example-configuration.tfvars](./Step2-Network/example-configuration.tfvars
 
 <img width='800' src='./images/configurationtfvars.png'/> 
 
-**Important** DO NOT USE 192.168.5.0/24 CIDR that is reserved for communications between AHV and the CVM
+**Important** DO NOT USE 192.168.5.0/24, 10.100.0.0/16, 10.200.0.0/16, 10.200.0.0/22, 100.64.1.0/24 CIDRs that is reserved for communications between AHV and the CVM, VTEP subnet or CSMP.
 
 
 To get these information, you can use the [Google CLI](https://cloud.google.com/sdk/gcloud) on your workstation or in [Google Cloud Shell](https://cloud.google.com/shell/docs/launching-cloud-shell?hl=en)
@@ -75,7 +75,7 @@ The following command gives the region actually used by the CLI regardless of wh
 https://cloud.google.com/sdk/gcloud/reference/config/set
 
 ```bash
-gcloud...
+gcloud config configurations list
 ```
 Supported Google Cloud regions for Nutanix Cloud Clusters on Google Cloud : https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-regions-c.html
 
