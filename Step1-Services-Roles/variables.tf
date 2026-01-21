@@ -26,6 +26,6 @@ variable "GCPServiceList" {
   # run gcloud services list --available
   type        = list(string)
   description = "The list of apis necessary for the project"
-  default     = [compute.googleapis.com, storage.googleapis.com]
+  default     = ["compute.googleapis.com", "storage.googleapis.com"]
 }
 

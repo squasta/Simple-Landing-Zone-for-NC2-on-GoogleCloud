@@ -1,24 +1,23 @@
 
-#
-# Enable the Compute Engine API (and more if necessary) for the Google Project
-## cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_service
-resource "google_project_service" "TF_Enabled_APIs" {
-  project                    = var.ProjectID
-  # toset() is used to ensure that the services are unique
-  # and to avoid duplicates in the list.
-  # This is important because google_project_service requires a set of services.
-  # If the same service is listed multiple times, it will cause an error.
-  # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_service
-  for_each                   = toset(var.GCPServiceList)
-  service                    = each.key
-  disable_dependent_services = true
-  disable_on_destroy         = true
-   timeouts {
-    create = "30m"
-    update = "40m"
-  }
-}
-
+# #
+# # Enable the Compute Engine API (and more if necessary) for the Google Project
+# ## cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_service
+# resource "google_project_service" "TF_Enabled_APIs" {
+#   project                    = var.ProjectID
+#   # toset() is used to ensure that the services are unique
+#   # and to avoid duplicates in the list.
+#   # This is important because google_project_service requires a set of services.
+#   # If the same service is listed multiple times, it will cause an error.
+#   # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_service
+#   for_each                   = toset(var.GCPServiceList)
+#   service                    = each.key
+#   disable_dependent_services = true
+#   disable_on_destroy         = true
+#    timeouts {
+#     create = "30m"
+#     update = "40m"
+#   }
+# }
 
 
 
@@ -30,7 +29,7 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Nodes" {
     # For example, "nc2_nodes_custom_role" or "nc2_nodes_role_2023"
     # Adjust the role_id as needed to fit your naming conventions and requirements.
     # Example: "nc2_nodes_custom_role"§
-    role_id     = "nc2_nodes_CustomRole"
+    role_id     = "nc2_nodes_custom_role"
     title       = "Custom Role for NC2 Nodes - GCE metal Instances"
     description = "A custom role for NC2 Nodes"
     project     = var.ProjectID
@@ -64,20 +63,32 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Nodes" {
     ]
 }
 
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project#number-1
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/project 
+data "google_project" "TF_project" {
+    project_id = var.ProjectID
+}
+
+# for debugging purposes only
+# output "ProjectNumber" {
+#   value = data.google_project.TF_project.number
+# }
+
 
 # Ensure the service account email is constructed correctly for the default Compute Engine default service account
 locals {
-    compute_service_account_email = "${var.ProjectID}-compute@developer.gserviceaccount.com"
+    compute_service_account_email = "${data.google_project.TF_project.number}-compute@developer.gserviceaccount.com"
 }
+
 
 # Assign the custom role TF_Custom_Role_NC2_Nodes to the default Compute service account of the project
 # cf. 
 resource "google_project_iam_member" "TF_Compute_SA_NC2_Custom_Role_Binding" {
     project = var.ProjectID
     role    = google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes.name
-    member  = "serviceAccount:${locals.compute_service_account_email}"
+    member  = "serviceAccount:${local.compute_service_account_email}"
     depends_on = [
-        google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes
+        google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes, local.compute_service_account_email
     ]
 }
 
@@ -93,6 +104,10 @@ resource "google_service_account" "TF_NC2_Portal_SA" {
 # cf. https://cloud.google.com/iam/docs/creating-custom-roles
 # cf. # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_project_iam_custom_role
 # This role is designed to provide necessary permissions for the NC2 Portal service account
+# Note: The iam.roles.get and resourcemanager.projects.getIamPolicy permissions are optional.
+#       These are used to validate the service account permissions.
+#       If you do not assign these permissions to the custom role, you will not be able to validate
+#       the service account permissions.
 resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
     role_id     = "nc2_portal_custom_role"
     title       = "Custom Role for NC2 Portal"
@@ -101,6 +116,7 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
     stage       = "GA"
 
     permissions = [
+        "cloudquotas.quotas.get",
         "compute.addresses.create",
         "compute.addresses.createInternal",
         "compute.addresses.delete",
@@ -149,13 +165,18 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "compute.networkEndpointGroups.get",
         "compute.networkEndpointGroups.list",
         "compute.networkEndpointGroups.use",
+        "compute.networks.addPeering",
         "compute.networks.create",
         "compute.networks.delete",
         "compute.networks.get",
         "compute.networks.getEffectiveFirewalls",
         "compute.networks.list",
+        "compute.networks.listPeeringRoutes",
+        "compute.networks.removePeering",
+        "compute.networks.updatePeering",
         "compute.networks.updatePolicy",
         "compute.networks.use",
+        "compute.projects.get",
         "compute.regionBackendServices.create",
         "compute.regionBackendServices.delete",
         "compute.regionBackendServices.get",
@@ -164,10 +185,17 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "compute.regionOperations.get",
         "compute.regions.get",
         "compute.regions.list",
+        "compute.resourcePolicies.create",
+        "compute.resourcePolicies.delete",
+        "compute.resourcePolicies.get",
+        "compute.resourcePolicies.use",
         "compute.routers.create",
         "compute.routers.delete",
         "compute.routers.get",
         "compute.routers.list",
+        "compute.routes.delete",
+        "compute.routes.get",
+        "compute.routes.list",
         "compute.subnetworks.create",
         "compute.subnetworks.delete",
         "compute.subnetworks.get",
@@ -180,14 +208,9 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "iam.serviceAccounts.actAs",
         "iam.serviceAccounts.get",
         "iam.serviceAccounts.list",
+        "monitoring.timeSeries.list",
         "resourcemanager.projects.get",
-        "resourcemanager.projects.getIamPolicy",
-         # new permissions needeed for NC2 on GCP GA and onwards
-        "compute.networks.addPeering",
-        "compute.networks.listPeeringRoutes",
-        "compute.networks.removePeering",
-        "compute.networks.updatePeering"
-        # Add any additional permissions required for NC2 portal
+        "resourcemanager.projects.getIamPolicy"
     ]
 }
 
