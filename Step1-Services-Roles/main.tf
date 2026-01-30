@@ -29,8 +29,8 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Nodes" {
     # For example, "nc2_nodes_custom_role" or "nc2_nodes_role_2023"
     # Adjust the role_id as needed to fit your naming conventions and requirements.
     # Example: "nc2_nodes_custom_role"§
-    role_id     = "nc2_nodes_custom_role"
-    title       = "Custom Role for NC2 Nodes - GCE metal Instances"
+    role_id     = var.NC2NodesCustomRoleName
+    title       = var.NC2NodesCustomRoleTitle
     description = "A custom role for NC2 Nodes"
     project     = var.ProjectID
     stage       = "GA"
@@ -75,30 +75,65 @@ data "google_project" "TF_project" {
 # }
 
 
-# Ensure the service account email is constructed correctly for the default Compute Engine default service account
-locals {
-    compute_service_account_email = "${data.google_project.TF_project.number}-compute@developer.gserviceaccount.com"
+
+
+############
+### If you want to use the default Compute Engine service account for NC2 Nodes,
+### you can uncomment the following code to assign the custom role to the default service account.
+############
+# # Ensure the service account email is constructed correctly for the default Compute Engine default service account
+# locals {
+#     compute_service_account_email = "${data.google_project.TF_project.number}-compute@developer.gserviceaccount.com"
+# }
+
+
+# # Assign the custom role TF_Custom_Role_NC2_Nodes to the default Compute service account of the project
+# # cf. 
+# resource "google_project_iam_member" "TF_Compute_SA_NC2_Custom_Role_Binding" {
+#     project = var.ProjectID
+#     role    = google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes.name
+#     member  = "serviceAccount:${local.compute_service_account_email}"
+#     depends_on = [
+#         google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes, local.compute_service_account_email
+#     ]
+# }
+############
+### If you want to use the default Compute Engine service account for NC2 Nodes,
+### you can uncomment the upper code to assign the custom role to the default service account.
+############
+
+
+# Custom Service account for GCE metal instances (to be used by NC2 Nodes)
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account
+# If you don't want to use defaut Compute Engine service account, you can create a custom service account for NC2 Nodes
+resource "google_service_account" "TF_NC2_NC2Node_SA" {
+    account_id   = var.NC2NodesServiceAccountName
+    display_name = "Custom NC2 Node Service Account"
+    project      = var.ProjectID
 }
 
 
-# Assign the custom role TF_Custom_Role_NC2_Nodes to the default Compute service account of the project
-# cf. 
+# Assign the custom role NC2 Node to the service account NC2 Node
+# 
 resource "google_project_iam_member" "TF_Compute_SA_NC2_Custom_Role_Binding" {
     project = var.ProjectID
     role    = google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes.name
-    member  = "serviceAccount:${local.compute_service_account_email}"
+    member    = "serviceAccount:${google_service_account.TF_NC2_NC2Node_SA.email}"
     depends_on = [
-        google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes, local.compute_service_account_email
+        google_project_iam_custom_role.TF_Custom_Role_NC2_Nodes, google_service_account.TF_NC2_NC2Node_SA
     ]
 }
 
 
-
+# Service account for NC2 Portal
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/google_service_account
+# https://portal.nutanix.com/page/documents/details?targetId=Nutanix-Cloud-Clusters-Google-Cloud:nc2-clusters-google-cloud-config-service-account-nc2-t.html
 resource "google_service_account" "TF_NC2_Portal_SA" {
-    account_id   = "nc2-portal-sa"
+    account_id   = var.NC2PortalServiceAccountName
     display_name = "NC2 Portal Service Account"
     project      = var.ProjectID
 }
+
 
 # Custom role for NC2 Portal with specific permissions
 # cf. https://cloud.google.com/iam/docs/creating-custom-roles
@@ -109,8 +144,8 @@ resource "google_service_account" "TF_NC2_Portal_SA" {
 #       If you do not assign these permissions to the custom role, you will not be able to validate
 #       the service account permissions.
 resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
-    role_id     = "nc2_portal_custom_role"
-    title       = "Custom Role for NC2 Portal"
+    role_id     = var.NC2PortalCustomRoleName
+    title       = var.NC2PortalCustomRoleTitle
     description = "A custom role for NC2 Portal specific permissions"
     project     = var.ProjectID
     stage       = "GA"
@@ -213,6 +248,7 @@ resource "google_project_iam_custom_role" "TF_Custom_Role_NC2_Portal" {
         "resourcemanager.projects.getIamPolicy"
     ]
 }
+
 
 # Assign the custom role NC2 portal to the service account NC2 Portal
 # cf. 

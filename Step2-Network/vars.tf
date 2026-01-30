@@ -29,6 +29,13 @@ variable "VPCName" {
   default     = "terra-custom-vpc"
 }
 
+# Management Subnet Name
+variable "ManagementSubnetName" {
+  description = "Name of the Cluster Management VPC subnet"
+  type        = string
+  default     = "cluster-management-subnet"
+}
+
 variable "ClusterManagementSubnetCidr" {
   description = "CIDR range for the Cluster Management VPC subnet"
   type        = string

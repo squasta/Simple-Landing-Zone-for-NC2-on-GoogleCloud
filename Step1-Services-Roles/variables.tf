@@ -18,7 +18,7 @@ variable "ProjectID" {
 variable "Region" {
   type = string
   description = "Google Cloud Region"
-  default = "us-central1"
+  default = "europe-west4"
 }
 
 variable "GCPServiceList" {
@@ -29,3 +29,44 @@ variable "GCPServiceList" {
   default     = ["compute.googleapis.com", "storage.googleapis.com"]
 }
 
+# Name of the custom role to be used in the NC2 project by Compute Engine instances
+variable "NC2NodesCustomRoleName" {
+  type        = string
+  description = "Name of the custom role to be used by NC2 Compute Engine instances"
+  default     = "nc2_nodes_custom_role"
+}
+
+# Title of the custom role to be used in the NC2 project by Compute Engine instances
+variable "NC2NodesCustomRoleTitle" {
+  type        = string
+  description = "Title of the custom role to be used by NC2 Compute Engine instances"
+  default     = "Custom Role for NC2 Nodes - GCE metal Instances"
+}
+
+# Name of the custom role to be used in the NC2 project by the NC2 Portal service account
+variable "NC2PortalCustomRoleName" {
+  type        = string
+  description = "Name of the custom role to be used by NC2 Portal service account"
+  default     = "nc2_portal_custom_role"
+}
+
+# Title of the custom role to be used in the NC2 project by the NC2 Portal service account
+variable "NC2PortalCustomRoleTitle" {
+  type        = string
+  description = "Title of the custom role to be used by NC2 Portal service account"
+  default     = "Custom Role for NC2 Portal"
+}
+
+# Name of the service account to be used in the NC2 project for the NC2 Portal
+variable "NC2PortalServiceAccountName" {
+  type        = string
+  description = "Name of the service account to be used by NC2 Portal"
+  default     = "nc2-portal-sa"
+}
+
+# Name of the service account to be used in the NC2 project for NC2 Nodes (GCE metal instances)
+variable "NC2NodesServiceAccountName" {
+  type        = string
+  description = "Name of the service account to be used by NC2 Nodes (GCE metal instances)"
+  default     = "nc2-nodes-sa"
+}

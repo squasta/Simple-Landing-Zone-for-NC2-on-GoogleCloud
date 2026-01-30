@@ -1,7 +1,7 @@
 # This resource creates a custom VPC network WITHOUT auto-created subnetworks.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network
 resource "google_compute_network" "terra_custom_vpc" {
-  name                    = "custom-vpc"
+  name                    = var.VPCName
   auto_create_subnetworks = false
   mtu                     = 8896 # must be >= 2000 for NC2 on GCP
 }
@@ -15,7 +15,7 @@ resource "google_compute_network" "terra_custom_vpc" {
 # This resource creates a subnetwork within the custom VPC using the specified CIDR range and region.
 # https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork
 resource "google_compute_subnetwork" "terra_cluster_management_subnet" {
-  name          = var.VPCName
+  name          = var.ManagementSubnetName
   ip_cidr_range = var.ClusterManagementSubnetCidr
   region        = var.Region
   network       = google_compute_network.terra_custom_vpc.id
