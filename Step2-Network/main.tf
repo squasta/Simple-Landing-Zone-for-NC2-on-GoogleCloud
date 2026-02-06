@@ -6,10 +6,40 @@ resource "google_compute_network" "terra_custom_vpc" {
   mtu                     = 8896 # must be >= 2000 for NC2 on GCP
 }
 
+# Cloud DNS policy for the VPC can be added here if needed
+# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_policy 
+# example of a DNS policy with alternative name servers and logging enabled :
+# https://developers.cloudflare.com/1.1.1.1/setup/google-cloud/
+resource "google_dns_policy" "terra-DNS-policy" {
+  name                      = "nc2-dns-policy"
+  enable_inbound_forwarding = true
+  enable_logging = true
+
+  alternative_name_server_config {
+    target_name_servers {
+      ipv4_address    = "8.8.8.8" # Google Public DNS server for VPC-level DNS resolution (in addition to the default metadata server) 
+    }
+    target_name_servers {
+      ipv4_address = "1.1.1.1" # cloudflare public DNS server as an alternative to Google Public DNS
+    }
+
+  }
+
+  networks {
+    network_url = google_compute_network.terra_custom_vpc.id
+  }
+}
+
+
 # Peering with other Google VPCs can be added here if needed
 # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_network_peering
-# IMPORTANT : Ensure that you enable export_custom_routes (created for NoNAT ERP)
+# VERY IMPORTANT : Ensure that you enable export_custom_routes (created for Nutanix FLOW VPC NoNAT ERP)
 # export_custom_routes = true
+
+
+
+
+
 
 
 # This resource creates a subnetwork within the custom VPC using the specified CIDR range and region.
