@@ -3,32 +3,33 @@
 resource "google_compute_network" "terra_custom_vpc" {
   name                    = var.VPCName
   auto_create_subnetworks = false
-  mtu                     = 8896 # must be >= 2000 for NC2 on GCP
+  mtu                     = 2000 # must be >= 2000 for NC2 on GCP. 2000 is the default value applied if NC2 portal is creating the Google VPC during NC2 cluster deployment.
 }
 
-# Cloud DNS policy for the VPC can be added here if needed
-# cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_policy 
-# example of a DNS policy with alternative name servers and logging enabled :
-# https://developers.cloudflare.com/1.1.1.1/setup/google-cloud/
-resource "google_dns_policy" "terra-DNS-policy" {
-  name                      = "nc2-dns-policy"
-  enable_inbound_forwarding = true
-  enable_logging = true
+# # Cloud DNS policy for the VPC can be added here if needed
+## PLEASE AVOID because it can cause issues with NC2 cluster deployment and operation if not properly configured, especially if you are not familiar with Google Cloud DNS policies and their impact on VPC-level DNS resolution.
+# # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/dns_policy 
+# # example of a DNS policy with alternative name servers and logging enabled :
+# # https://developers.cloudflare.com/1.1.1.1/setup/google-cloud/
+# resource "google_dns_policy" "terra-DNS-policy" {
+#   name                      = "nc2-dns-policy"
+#   enable_inbound_forwarding = true
+#   enable_logging = true
 
-  alternative_name_server_config {
-    target_name_servers {
-      ipv4_address    = "8.8.8.8" # Google Public DNS server for VPC-level DNS resolution (in addition to the default metadata server) 
-    }
-    target_name_servers {
-      ipv4_address = "1.1.1.1" # cloudflare public DNS server as an alternative to Google Public DNS
-    }
+#   alternative_name_server_config {
+#     target_name_servers {
+#       ipv4_address    = "8.8.8.8" # Google Public DNS server for VPC-level DNS resolution (in addition to the default metadata server) 
+#     }
+#     target_name_servers {
+#       ipv4_address = "1.1.1.1" # cloudflare public DNS server as an alternative to Google Public DNS
+#     }
 
-  }
+#   }
 
-  networks {
-    network_url = google_compute_network.terra_custom_vpc.id
-  }
-}
+#   networks {
+#     network_url = google_compute_network.terra_custom_vpc.id
+#   }
+# }
 
 
 # Peering with other Google VPCs can be added here if needed
@@ -53,6 +54,7 @@ resource "google_compute_subnetwork" "terra_cluster_management_subnet" {
     range_name    = "secondary-range-for-nat"
     ip_cidr_range = var.NATSubnetCidr
   }
+  # private_ip_google_access = true # This allows VMs without external IPs in this subnet to access Google APIs and services through the private Google access feature, which is important for NC2 cluster management and operation
 }
 
 # This resource creates a subnetwork within the custom VPC using the specified CIDR range and region.
@@ -245,7 +247,7 @@ resource "google_compute_firewall" "TF_allow_traffic_from_vpn_tunnel" {
   network = google_compute_network.terra_custom_vpc.id        
     allow {
         protocol = "tcp"
-        ports    = ["22", "3389", "80", "443"]  # Adjust ports as needed
+        ports    = ["22", "3389", "80", "443", "9440"]  # Adjust ports as needed
     }
     allow {
         protocol = "icmp"  # ICMP protocol
