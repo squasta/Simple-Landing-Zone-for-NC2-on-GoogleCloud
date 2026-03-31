@@ -5,6 +5,7 @@ VPCName="<YOUR GOOGLE VPC NAME>"
 ClusterManagementSubnetCidr="172.20.0.0/16"    #CHANGE WITH YOUR CIDR
 NATSubnetCidr="172.21.0.0/16"                  #CHANGE WITH YOUR CIDR
 NoNATSubnetCidr="172.22.0.0/16"                #CHANGE WITH YOUR CIDR
+JumpboxSubnetCidr = "172.23.0.0/16"            #CHANGE WITH YOUR CIDR
 ### VPN Site-to-Site settings (here Cloud VPN Classic)
 VpnGatewayName="<YOUR VPN GATEWAY NAME>"
 VpnTunnelName="<YOUR VPN TUNNEL NAME>"

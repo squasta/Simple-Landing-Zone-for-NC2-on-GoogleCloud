@@ -67,6 +67,7 @@ resource "google_compute_subnetwork" "terra_NoNAT_subnet" {
 }
 
 
+
 ### Cloud NAT for the VPC
 # cf. https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router
 resource "google_compute_router" "terra_router" {

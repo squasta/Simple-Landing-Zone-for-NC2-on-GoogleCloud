@@ -64,6 +64,16 @@ variable "EnableJumbox" {
   default     = 0
 }
 
+# Jumbox Subnet CIDR
+variable "JumpboxSubnetCidr" {
+  description = "CIDR range for the Jumpbox subnet"
+  type        = string
+  default     = "172.22.0.0/16"
+}
+
+
+
+
 
 
 ##### FOR VPN GATEWAY AND TUNNEL

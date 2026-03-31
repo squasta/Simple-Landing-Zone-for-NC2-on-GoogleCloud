@@ -1,6 +1,17 @@
 # This code is compatible with Terraform 4.25.0 and versions that are backwards compatible to 4.25.0.
 # For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
 
+
+# This resource creates a subnetwork within the custom VPC using the specified CIDR range and region.
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_subnetwork
+resource "google_compute_subnetwork" "terra_jumpbox_subnet" {
+  name          = "jumpbox-subnet"
+  ip_cidr_range = var.JumpboxSubnetCidr
+  region        = var.Region
+  network       = google_compute_network.terra_custom_vpc.id
+}
+
+
 # Fetch the latest Windows Server 2025 (Desktop Experience) image from the "windows-cloud" project
 data "google_compute_image" "terra_jumbox_image" {
   family  = "windows-2025"
@@ -59,7 +70,7 @@ resource "google_compute_instance" "terra_jumbox_vm" {
 
     queue_count = 0
     stack_type  = "IPV4_ONLY"
-    subnetwork = google_compute_subnetwork.terra_cluster_management_subnet.id
+    subnetwork = google_compute_subnetwork.terra_jumpbox_subnet.id
   }
 
   scheduling {
